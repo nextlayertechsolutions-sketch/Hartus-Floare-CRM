@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Lead Management | Real Estate CRM</title>
+    <link rel="icon" type="image/jpeg" href="hf.jpeg">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+</head>
+
+<body>
+
+    <!-- ======================
+        Sidebar
+    ======================= -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+
+            <!-- Company Logo -->
+            <img src="hf.jpeg" alt="Logo">
+
+            <h2>Hartus Floare (Pvt) Ltd.</h2>
+
+        </div>
+
+        <ul>
+
+            <li>
+                <a href="index.html">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+
+            <li class="active">
+                <a href="leads.html">
+                    <i class="fa-solid fa-users"></i>
+                    <span>Lead Management</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="site-visit.html">
+                    <i class="fa-solid fa-location-dot"></i>
+                    <span>Site Visits</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="bookings.html">
+                    <i class="fa-solid fa-file-signature"></i>
+                    <span>Bookings</span>
+                </a>
+            </li>
+
+            <li>
+
+        </ul>
+
+    </aside>
+
+    <!-- ======================
+        Main Content
+    ======================= -->
+
+    <main class="main">
+
+        <!-- Topbar -->
+
+        <div class="topbar">
+
+            <h2>Lead Management</h2>
+            <br>
+
+            <div class="top-right">
+
+                <button class="btn" onclick="document.getElementById('clientName').focus()">
+                    <i class="fa-solid fa-plus"></i>
+                    Add Lead
+                </button>
+
+            </div>
+
+        </div>
+        <br><br>
+        <!-- ===========================
+=========================== -->
+
+
+<!-- Search & Filter -->
+
+<div class="toolbar">
+
+    <input type="text"
+           id="searchLead"
+           placeholder="Search by Name or Mobile...">
+
+    <select id="statusFilter">
+
+        <option value="">All Status</option>
+
+        <option>New Lead</option>
+
+        <option>Interested</option>
+
+        <option>Follow-up</option>
+
+        <option>Site Visit</option>
+
+        <option>Negotiation</option>
+
+        <option>Booked</option>
+
+        <option>Lost</option>
+
+    </select>
+
+</div>
+
+<!-- Add Lead Form -->
+
+<form id="leadForm" class="lead-form">
+
+<h3>Add New Lead</h3>
+
+<div class="grid">
+
+<div class="form-group">
+<label>Client Name</label>
+<input type="text" id="clientName">
+</div>
+
+<div class="form-group">
+<label>Mobile Number</label>
+<input type="text" id="mobile">
+</div>
+
+<div class="form-group">
+<label>Email</label>
+<input type="email" id="email">
+</div>
+
+<div class="form-group">
+<label>City</label>
+<input type="text" id="city">
+</div>
+
+<div class="form-group">
+<label>Project</label>
+
+<select id="project">
+
+<option>MDA Scheme-1</option>
+
+<option>Hartus Down Town</option>
+
+<option>Hartus Prime District</option>
+
+<option>Hartus Economy</option>
+
+<option>Hartus FarmHouses</option>
+
+
+</select>
+
+</div>
+
+<div class="form-group">
+
+<label>Lead Source</label>
+
+<select id="source">
+
+<option>Facebook</option>
+
+<option>WhatsApp</option>
+
+<option>YouTube</option>
+
+<option>Website</option>
+
+<option>Reference</option>
+
+<option>Walk-in</option>
+
+</select>
+
+</div>
+
+<div class="form-group" id="referenceField" style="display:none;">
+
+    <label>Reference Name</label>
+
+    <input
+        type="text"
+        id="referenceName"
+        placeholder="Enter Reference Name">
+
+</div>
+
+<div class="form-group">
+
+<label>Lead Status</label>
+
+<select id="status">
+
+<option>New Lead</option>
+
+<option>Interested</option>
+
+<option>Follow-up</option>
+
+<option>Site Visit</option>
+
+<option>Negotiation</option>
+
+<option>Booked</option>
+
+<option>Lost</option>
+
+</select>
+
+</div>
+
+<div class="form-group">
+
+<label>Budget</label>
+
+<input type="number" id="budget">
+
+</div>
+
+<div class="form-group">
+
+<label>Next Follow-up</label>
+
+<input type="date" id="followup">
+
+</div>
+
+<div class="form-group full">
+
+<label>Remarks</label>
+
+<textarea id="remarks" rows="4"></textarea>
+
+</div>
+
+</div>
+
+<button type="submit" class="btn">
+    <i class="fa-solid fa-floppy-disk"></i>
+    Save Lead
+</button>
+
+</form>
+
+<!-- Lead Table -->
+
+<div class="table-box">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>#</th>
+
+<th>Client</th>
+
+<th>Mobile</th>
+
+<th>Project</th>
+
+<th>Lead Source</th>
+
+<th>Status</th>
+
+<th>Follow-up</th>
+
+<th>Action</th>
+
+</tr>
+
+</thead>
+
+<tbody id="leadTable">
+
+</tbody>
+
+</table>
+
+</div>
+
+<script src="leads.js"></script>

@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Site Visit Management</title>
+    <link rel="icon" type="image/jpeg" href="hf.jpeg">
+
+    <link rel="stylesheet" href="style.css">
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+
+<!-- Sidebar -->
+
+<aside class="sidebar">
+
+    <div class="logo">
+        <img src="hf.jpeg">
+        <h2>Hartus Floare (Pvt) Ltd.</h2>
+    </div>
+
+    <ul>
+
+        <li><a href="index.html"><i class="fa fa-chart-line"></i> Dashboard</a></li>
+
+        <li><a href="leads.html"><i class="fa fa-users"></i> Leads</a></li>
+
+        <li class="active"><a href="site-visit.html"><i class="fa fa-location-dot"></i> Site Visits</a></li>
+
+        <li><a href="bookings.html"><i class="fa fa-file-signature"></i> Bookings</a></li>
+
+    </ul>
+
+</aside>
+
+<main class="main">
+
+<div class="topbar">
+
+<h2>🚗 Site Visit Management</h2>
+
+<button class="btn">
+<i class="fa-solid fa-plus"></i>
+Schedule Visit
+</button>
+
+</div>
+
+<div class="toolbar">
+
+<input
+type="text"
+id="searchVisit"
+placeholder="Search Client...">
+
+<select id="statusFilter">
+
+<option value="">All Status</option>
+
+<option>Scheduled</option>
+
+<option>Confirmed</option>
+
+<option>Completed</option>
+
+<option>Cancelled</option>
+
+<option>No Show</option>
+
+</select>
+
+</div>
+
+<form id="visitForm" class="lead-form">
+
+<h3>Schedule Site Visit</h3>
+
+<div class="grid">
+
+<div class="form-group">
+<label>Client Name</label>
+<input type="text" id="client" required>
+</div>
+
+<div class="form-group">
+<label>Mobile Number</label>
+<input type="text" id="mobile" required>
+</div>
+
+<div class="form-group">
+<label>Project</label>
+
+<select id="project">
+
+<option>MDA Scheme-1</option>
+
+<option>Hartus Down Town</option>
+
+<option>Hartus Prime District</option>
+
+<option>Hartus Economy</option>
+
+<option>Hartus Farm Houses</option>
+
+</select>
+
+</div>
+
+<div class="form-group">
+<label>Sector / Block</label>
+<input type="text" id="sector">
+</div>
+
+<div class="form-group">
+<label>Sales Agent</label>
+<input type="text" id="agent">
+</div>
+
+<div class="form-group">
+<label>Visit Date</label>
+<input type="date" id="date">
+</div>
+
+<div class="form-group">
+<label>Visit Time</label>
+<input type="time" id="time">
+</div>
+
+<div class="form-group">
+
+<label>Pickup Required</label>
+
+<select id="pickup">
+
+<option>No</option>
+
+<option>Yes</option>
+
+</select>
+
+</div>
+
+<div class="form-group pickupBox">
+
+<label>Pickup Location</label>
+
+<input type="text" id="pickupLocation">
+
+</div>
+
+<div class="form-group pickupBox">
+
+<label>Driver Name</label>
+
+<input type="text" id="driver">
+
+</div>
+
+<div class="form-group pickupBox">
+
+<label>Vehicle Number</label>
+
+<input type="text" id="vehicle">
+
+</div>
+
+<div class="form-group">
+
+<label>Visitors</label>
+
+<input type="number" id="visitors">
+
+</div>
+
+<div class="form-group">
+
+<label>Status</label>
+
+<select id="status">
+
+<option>Scheduled</option>
+
+<option>Confirmed</option>
+
+<option>Completed</option>
+
+<option>Rescheduled</option>
+
+<option>Cancelled</option>
+
+<option>No Show</option>
+
+</select>
+
+</div>
+
+<div class="form-group full">
+
+<label>Visit Notes</label>
+
+<textarea id="notes"></textarea>
+
+</div>
+
+<div class="form-group">
+
+<label>Next Follow-up</label>
+
+<input type="date" id="followup">
+
+</div>
+
+</div>
+
+<button class="btn" type="submit">
+
+<i class="fa-solid fa-floppy-disk"></i>
+
+Save Site Visit
+
+</button>
+
+</form>
+
+<div class="table-box">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>#</th>
+
+<th>Client</th>
+
+<th>Mobile</th>
+
+<th>Project</th>
+
+<th>Date</th>
+
+<th>Time</th>
+
+<th>Agent</th>
+
+<th>Status</th>
+
+<th>Action</th>
+
+</tr>
+
+</thead>
+
+<tbody id="visitTable">
+
+</tbody>
+
+</table>
+
+</div>
+
+</main>
+
+<script src="script.js"></script>
+
+</body>
+
+</html>

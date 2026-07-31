@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="icon" type="image/jpeg" href="hf.jpeg">
+<title>Booking Management</title>
+
+<link rel="stylesheet" href="style.css">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+rel="stylesheet">
+
+</head>
+
+<body>
+
+    <aside class="sidebar">
+
+<div class="logo">
+
+<img src="hf.jpeg">
+
+<h2>Hartus Floare (Pvt) Ltd.</h2>
+
+</div>
+
+<ul>
+
+<li>
+<a href="index.html">
+<i class="fa fa-chart-line"></i>
+Dashboard
+</a>
+</li>
+
+<li>
+<a href="leads.html">
+<i class="fa fa-users"></i>
+Leads
+</a>
+</li>
+
+<li>
+<a href="site-visit.html">
+<i class="fa fa-location-dot"></i>
+Site Visits
+</a>
+</li>
+
+<li class="active">
+<a href="bookings.html">
+<i class="fa fa-file-signature"></i>
+Bookings
+</a>
+</li>
+
+</ul>
+
+</aside>
+
+<main class="main">
+
+<div class="topbar">
+
+<h2>📝 Booking Management</h2>
+
+<button class="btn">
+
+<i class="fa-solid fa-plus"></i>
+
+New Booking
+
+</button>
+
+</div>
+<div class="toolbar">
+
+<input
+type="text"
+id="searchBooking"
+placeholder="Search Client...">
+
+<select id="projectFilter">
+
+<option value="">All Projects</option>
+
+<option>MDA Scheme-1</option>
+
+<option>Hartus Prime District</option>
+
+<option>Hartus Down Town</option>
+
+<option>Hartus Economy</option>
+
+<option>Hartus Farm Houses</option>
+
+</select>
+
+<select id="statusFilter">
+
+<option value="">All Status</option>
+
+<option>Booked</option>
+
+<option>Confirmed</option>
+
+<option>Cancelled</option>
+
+</select>
+
+</div>
+<form id="bookingForm" class="lead-form">
+
+<h3>New Booking</h3>
+
+<div class="grid">
+    <div class="form-group">
+
+<label>Client Name</label>
+
+<input type="text" id="client" required>
+
+</div>
+
+<div class="form-group">
+
+<label>Mobile Number</label>
+
+<input
+type="text"
+id="mobile"
+required>
+
+</div>
+
+<div class="form-group">
+
+<label>CNIC Number</label>
+
+<input
+type="text"
+id="cnic">
+
+</div>
+
+<div class="form-group">
+
+    <label>Project</label>
+
+    <select id="project" required>
+
+        <option value="">Select Project</option>
+
+        <option>MDA Scheme-1</option>
+
+        <option>Hartus Prime District</option>
+
+        <option>Hartus Down Town</option>
+
+        <option>Hartus Economy</option>
+
+        <option>Hartus Farm Houses</option>
+
+    </select>
+
+</div>
+
+<div class="form-group">
+
+    <label>Sector / Block</label>
+
+    <input type="text" id="sector" placeholder="Sector / Block">
+
+</div>
+
+<div class="form-group">
+
+    <label>Plot No</label>
+
+    <input type="text" id="plot" placeholder="Plot Number">
+
+</div>
+
+<div class="form-group">
+
+    <label>Status</label>
+
+    <select id="bookingStatus">
+
+        <option>Booked</option>
+
+        <option>Confirmed</option>
+
+        <option>Cancelled</option>
+
+    </select>
+
+</div>
+
+</div>
+<button type="submit" class="btn">
+    <i class="fa-solid fa-floppy-disk"></i>
+    Save Booking
+</button>
+</form>
+
+<div class="table-box">
+
+    <table>
+
+        <thead>
+
+            <tr>
+
+                <th>#</th>
+                <th>Client</th>
+                <th>Mobile</th>
+                <th>Project</th>
+                <th>Sector</th>
+                <th>Plot</th>
+                <th>Status</th>
+                <th>Action</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody id="bookingTable">
+
+        </tbody>
+
+    </table>
+
+</div>
+
+<script src="bookings.js"></script>
+
+</body>
+</html>
