@@ -56,26 +56,34 @@ Schedule Visit
 
 <div class="toolbar">
 
-<input
-type="text"
-id="searchVisit"
-placeholder="Search Client...">
+    <input
+        type="text"
+        id="searchVisit"
+        placeholder="Search Client...">
 
-<select id="statusFilter">
+    <select id="statusFilter">
+        <option value="">All Status</option>
+        <option>Scheduled</option>
+        <option>Confirmed</option>
+        <option>Completed</option>
+        <option>Cancelled</option>
+        <option>No Show</option>
+    </select>
 
-<option value="">All Status</option>
+    <button class="btn" id="exportVisits">
+        <i class="fa-solid fa-file-excel"></i>
+        Export Excel
+    </button>
 
-<option>Scheduled</option>
-
-<option>Confirmed</option>
-
-<option>Completed</option>
-
-<option>Cancelled</option>
-
-<option>No Show</option>
-
-</select>
+    <label class="btn">
+        <i class="fa-solid fa-upload"></i>
+        Import Excel
+        <input
+            type="file"
+            id="importVisits"
+            accept=".csv"
+            hidden>
+    </label>
 
 </div>
 

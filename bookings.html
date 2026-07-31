@@ -82,10 +82,23 @@ New Booking
 </div>
 <div class="toolbar">
 
-<input
-type="text"
-id="searchBooking"
-placeholder="Search Client...">
+    <input type="text"
+           id="searchBooking"
+           placeholder="Search Client...">
+
+    <button class="btn" id="exportExcel">
+        <i class="fa-solid fa-file-excel"></i>
+        Export Excel
+    </button>
+
+    <label class="btn">
+        <i class="fa-solid fa-upload"></i>
+        Import Excel
+        <input type="file"
+               id="importExcel"
+               accept=".csv"
+               hidden>
+    </label>
 
 <select id="projectFilter">
 

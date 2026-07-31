@@ -111,6 +111,25 @@
            id="searchLead"
            placeholder="Search by Name or Mobile...">
 
+           <div style="display:flex;gap:10px;flex-wrap:wrap;">
+
+        <button type="button" class="btn" onclick="exportLeads()">
+            <i class="fa-solid fa-file-excel"></i>
+            Export Excel
+        </button>
+
+    <label class="btn">
+        <i class="fa-solid fa-upload"></i>
+        Import Excel
+        <input
+            type="file"
+            id="importLeadFile"
+            accept=".xlsx,.xls"
+            hidden>
+    </label>
+
+</div>
+
     <select id="statusFilter">
 
         <option value="">All Status</option>
@@ -309,4 +328,9 @@
 
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+
 <script src="leads.js"></script>
+
+</body>
+</html>

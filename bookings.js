@@ -149,3 +149,32 @@ document.addEventListener("DOMContentLoaded", function () {
     loadBookings();
 
 });
+
+document.getElementById("exportExcel").addEventListener("click", function () {
+
+    let bookings = JSON.parse(localStorage.getItem("bookings")) || [];
+
+    if(bookings.length===0){
+        alert("No Data Found");
+        return;
+    }
+
+    let csv="Client,Mobile,CNIC,Project,Sector,Plot,Status\n";
+
+    bookings.forEach(b=>{
+
+        csv+=`${b.clientName},${b.mobile},${b.cnic},${b.project},${b.sector},${b.plot},${b.status}\n`;
+
+    });
+
+    const blob=new Blob([csv],{type:"text/csv"});
+
+    const link=document.createElement("a");
+
+    link.href=URL.createObjectURL(blob);
+
+    link.download="Bookings.csv";
+
+    link.click();
+
+});

@@ -257,3 +257,96 @@ window.location.href=`tel:${number}`;
 // =========================
 
 loadVisits();
+
+// ===============================
+// Export Site Visits
+// ===============================
+
+document.getElementById("exportVisits").addEventListener("click", function () {
+
+    const visits = JSON.parse(localStorage.getItem("visits")) || [];
+
+    if (visits.length === 0) {
+        alert("No Site Visits Found");
+        return;
+    }
+
+    let csv = "Client,Mobile,Project,Sector,Agent,Date,Time,Status,Visitors,Pickup,Pickup Location,Driver,Vehicle,Followup,Notes\n";
+
+    visits.forEach(v => {
+
+        csv += `${v.client},${v.mobile},${v.project},${v.sector},${v.agent},${v.date},${v.time},${v.status},${v.visitors},${v.pickup},${v.pickupLocation},${v.driver},${v.vehicle},${v.followup},${v.notes}\n`;
+
+    });
+
+    const blob = new Blob([csv], {
+        type: "text/csv"
+    });
+
+    const link = document.createElement("a");
+
+    link.href = URL.createObjectURL(blob);
+
+    link.download = "Site_Visits.csv";
+
+    link.click();
+
+});
+
+// ===============================
+// Import Site Visits
+// ===============================
+
+document.getElementById("importVisits").addEventListener("change", function (e) {
+
+    const file = e.target.files[0];
+
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = function (event) {
+
+        const rows = event.target.result.split("\n");
+
+        let visits = JSON.parse(localStorage.getItem("visits")) || [];
+
+        rows.slice(1).forEach(row => {
+
+            if (row.trim() === "") return;
+
+            const cols = row.split(",");
+
+            visits.push({
+
+                client: cols[0] || "",
+                mobile: cols[1] || "",
+                project: cols[2] || "",
+                sector: cols[3] || "",
+                agent: cols[4] || "",
+                date: cols[5] || "",
+                time: cols[6] || "",
+                status: cols[7] || "",
+                visitors: cols[8] || "",
+                pickup: cols[9] || "",
+                pickupLocation: cols[10] || "",
+                driver: cols[11] || "",
+                vehicle: cols[12] || "",
+                followup: cols[13] || "",
+                notes: cols[14] || ""
+
+            });
+
+        });
+
+        localStorage.setItem("visits", JSON.stringify(visits));
+
+        alert("Site Visits Imported Successfully");
+
+        location.reload();
+
+    };
+
+    reader.readAsText(file);
+
+});
