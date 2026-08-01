@@ -178,3 +178,22 @@ document.getElementById("exportExcel").addEventListener("click", function () {
     link.click();
 
 });
+
+// ==========================
+// New Booking Button
+// ==========================
+
+const newBookingBtn = document.getElementById("newBookingBtn");
+
+newBookingBtn.addEventListener("click", function () {
+
+    const form = document.getElementById("bookingForm");
+
+    form.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
+
+    document.getElementById("client").focus();
+
+});

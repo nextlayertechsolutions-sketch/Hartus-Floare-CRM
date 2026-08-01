@@ -9,6 +9,7 @@ const referenceNameInput = document.getElementById("referenceName");
 const importLeadFile = document.getElementById("importLeadFile");
 
 let leads = [];
+let editingLeadId = null;
 
 function getLeadValue(lead, keys) {
     for (const key of keys) {
@@ -108,7 +109,10 @@ function renderLeads(search = "", status = "") {
                 <td>${lead.status || "—"}</td>
                 <td>${lead.followup || "—"}</td>
                 <td>
-                    <button type="button" class="delete-btn" data-lead-id="${lead.id}">
+                    <button type="button" class="edit-btn" data-action="edit" data-lead-id="${lead.id}">
+                        Edit
+                    </button>
+                    <button type="button" class="delete-btn" data-action="delete" data-lead-id="${lead.id}">
                         Delete
                     </button>
                 </td>
@@ -119,6 +123,15 @@ function renderLeads(search = "", status = "") {
 function resetLeadForm() {
     if (leadForm) {
         leadForm.reset();
+        editingLeadId = null;
+        const submitButton = leadForm.querySelector('button[type="submit"]');
+        if (submitButton) {
+            submitButton.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save Lead';
+        }
+        const heading = leadForm.querySelector('h3');
+        if (heading) {
+            heading.textContent = "Add New Lead";
+        }
         if (referenceField) {
             referenceField.style.display = "none";
         }
@@ -140,8 +153,8 @@ function handleLeadSubmit(event) {
         return;
     }
 
-    const newLead = normalizeLead({
-        id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+    const formLead = normalizeLead({
+        id: editingLeadId || `${Date.now()}-${Math.random().toString(16).slice(2)}`,
         name: document.getElementById("clientName").value.trim(),
         mobile: document.getElementById("mobile").value.trim(),
         email: document.getElementById("email").value.trim(),
@@ -155,16 +168,61 @@ function handleLeadSubmit(event) {
         remarks: document.getElementById("remarks").value.trim()
     });
 
-    if (!newLead.name && !newLead.mobile) {
+    if (!formLead.name && !formLead.mobile) {
         notify("Please enter at least a client name or mobile number.");
         return;
     }
 
-    leads.push(newLead);
+    if (editingLeadId) {
+        leads = leads.map((lead) => lead.id === editingLeadId ? formLead : lead);
+        notify("Lead updated successfully.");
+    } else {
+        leads.push(formLead);
+        notify("Lead added successfully.");
+    }
+
     saveLeads();
     renderLeads(searchLead.value, statusFilter.value);
     resetLeadForm();
-    notify("Lead added successfully.");
+}
+
+function editLead(leadId) {
+    const leadToEdit = leads.find((lead) => lead.id === leadId);
+    if (!leadToEdit) {
+        return;
+    }
+
+    editingLeadId = leadId;
+
+    document.getElementById("clientName").value = leadToEdit.name || "";
+    document.getElementById("mobile").value = leadToEdit.mobile || "";
+    document.getElementById("email").value = leadToEdit.email || "";
+    document.getElementById("city").value = leadToEdit.city || "";
+    document.getElementById("project").value = leadToEdit.project || "";
+    document.getElementById("source").value = leadToEdit.source || "";
+    document.getElementById("referenceName").value = leadToEdit.referenceName || "";
+    document.getElementById("status").value = leadToEdit.status || "";
+    document.getElementById("budget").value = leadToEdit.budget || "";
+    document.getElementById("followup").value = leadToEdit.followup || "";
+    document.getElementById("remarks").value = leadToEdit.remarks || "";
+
+    if (sourceSelect && sourceSelect.value === "Reference") {
+        referenceField.style.display = "block";
+    } else if (referenceField) {
+        referenceField.style.display = "none";
+    }
+
+    const submitButton = leadForm.querySelector('button[type="submit"]');
+    if (submitButton) {
+        submitButton.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Update Lead';
+    }
+
+    const heading = leadForm.querySelector('h3');
+    if (heading) {
+        heading.textContent = "Edit Lead";
+    }
+
+    document.getElementById("clientName").focus();
 }
 
 function deleteLead(leadId) {
@@ -271,7 +329,14 @@ function initializeLeadManager() {
                 return;
             }
 
-            deleteLead(button.getAttribute("data-lead-id"));
+            const action = button.getAttribute("data-action");
+            const leadId = button.getAttribute("data-lead-id");
+
+            if (action === "edit") {
+                editLead(leadId);
+            } else if (action === "delete") {
+                deleteLead(leadId);
+            }
         });
     }
 
