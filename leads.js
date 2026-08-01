@@ -89,7 +89,7 @@ function renderLeads(search = "", status = "") {
     if (filtered.length === 0) {
         leadTable.innerHTML = `
             <tr>
-                <td colspan="8" style="text-align:center;">No leads found.</td>
+                <td colspan="9" style="text-align:center;">No leads found.</td>
             </tr>`;
         return;
     }
@@ -108,6 +108,7 @@ function renderLeads(search = "", status = "") {
                 <td>${sourceLabel}</td>
                 <td>${lead.status || "—"}</td>
                 <td>${lead.followup || "—"}</td>
+                <td>${lead.remarks || "—"}</td>
                 <td>
                     <button type="button" class="edit-btn" data-action="edit" data-lead-id="${lead.id}">
                         Edit

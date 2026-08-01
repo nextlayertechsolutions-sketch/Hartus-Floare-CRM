@@ -11,7 +11,48 @@ const statusFilter = document.getElementById("statusFilter");
 const pickup = document.getElementById("pickup");
 const pickupBoxes = document.querySelectorAll(".pickupBox");
 
-let visits = JSON.parse(localStorage.getItem("visits")) || [];
+function normalizeVisit(rawVisit = {}, index = 0) {
+    return {
+        id: rawVisit.id || `visit-${Date.now()}-${index + 1}-${Math.random().toString(16).slice(2)}`,
+        client: rawVisit.client || "",
+        mobile: rawVisit.mobile || "",
+        project: rawVisit.project || "",
+        sector: rawVisit.sector || "",
+        agent: rawVisit.agent || "",
+        date: rawVisit.date || "",
+        time: rawVisit.time || "",
+        pickup: rawVisit.pickup || "No",
+        pickupLocation: rawVisit.pickupLocation || "",
+        driver: rawVisit.driver || "",
+        vehicle: rawVisit.vehicle || "",
+        visitors: rawVisit.visitors || "",
+        status: rawVisit.status || "Scheduled",
+        notes: rawVisit.notes || "",
+        followup: rawVisit.followup || ""
+    };
+}
+
+function loadVisitsFromStorage() {
+    try {
+        const stored = JSON.parse(localStorage.getItem("visits") || "[]");
+        if (!Array.isArray(stored)) {
+            return [];
+        }
+
+        const normalized = stored.map((visit, index) => normalizeVisit(visit, index));
+        if (JSON.stringify(normalized) !== JSON.stringify(stored)) {
+            localStorage.setItem("visits", JSON.stringify(normalized));
+        }
+
+        return normalized;
+    } catch (error) {
+        console.error("Failed to load visits from storage:", error);
+        return [];
+    }
+}
+
+let visits = loadVisitsFromStorage();
+let editingVisitId = null;
 
 // =========================
 // Pickup Show Hide
@@ -43,45 +84,45 @@ visitForm.addEventListener("submit", function(e){
 
     e.preventDefault();
 
-    const visit = {
-
+    const visit = normalizeVisit({
+        id: editingVisitId || null,
         client: document.getElementById("client").value,
-
         mobile: document.getElementById("mobile").value,
-
         project: document.getElementById("project").value,
-
         sector: document.getElementById("sector").value,
-
         agent: document.getElementById("agent").value,
-
         date: document.getElementById("date").value,
-
         time: document.getElementById("time").value,
-
         pickup: document.getElementById("pickup").value,
-
         pickupLocation: document.getElementById("pickupLocation").value,
-
         driver: document.getElementById("driver").value,
-
         vehicle: document.getElementById("vehicle").value,
-
         visitors: document.getElementById("visitors").value,
-
         status: document.getElementById("status").value,
-
         notes: document.getElementById("notes").value,
-
         followup: document.getElementById("followup").value
+    }, visits.length);
 
-    };
-
-    visits.push(visit);
+    if (editingVisitId) {
+        visits = visits.map(v => v.id === editingVisitId ? visit : v);
+    } else {
+        visits.push(visit);
+    }
 
     localStorage.setItem("visits", JSON.stringify(visits));
 
     visitForm.reset();
+    editingVisitId = null;
+
+    const submitButton = visitForm.querySelector('button[type="submit"]');
+    if (submitButton) {
+        submitButton.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save Site Visit';
+    }
+
+    const heading = visitForm.querySelector('h3');
+    if (heading) {
+        heading.textContent = 'Schedule Site Visit';
+    }
 
     pickupBoxes.forEach(box => box.style.display = "none");
 
@@ -163,24 +204,33 @@ ${visit.status}
 </span>
 </td>
 
+<td>${visit.notes || "—"}</td>
+
 <td>
 
-<button class="action-btn call-btn"
+<button class="action-btn call-btn" title="Call Client"
 onclick="callClient('${visit.mobile}')">
 
 <i class="fa fa-phone"></i>
 
 </button>
 
-<button class="action-btn whatsapp-btn"
+<button class="action-btn whatsapp-btn" title="WhatsApp Client"
 onclick="whatsappClient('${visit.mobile}')">
 
 <i class="fab fa-whatsapp"></i>
 
 </button>
 
-<button class="action-btn delete-btn"
-onclick="deleteVisit(${visits.indexOf(visit)})">
+<button class="action-btn edit-btn" title="Edit Visit"
+onclick="editVisit('${visit.id}')">
+
+<i class="fa fa-edit"></i>
+
+</button>
+
+<button class="action-btn delete-btn" title="Delete Visit"
+onclick="deleteVisit('${visit.id}')">
 
 <i class="fa fa-trash"></i>
 
@@ -197,14 +247,57 @@ onclick="deleteVisit(${visits.indexOf(visit)})">
 }
 
 // =========================
-// Delete
+// Edit / Delete
 // =========================
 
-function deleteVisit(index){
+function editVisit(visitId){
+
+    const visitToEdit = visits.find(v => v.id === visitId);
+
+    if (!visitToEdit) return;
+
+    editingVisitId = visitId;
+
+    document.getElementById("client").value = visitToEdit.client || "";
+    document.getElementById("mobile").value = visitToEdit.mobile || "";
+    document.getElementById("project").value = visitToEdit.project || "";
+    document.getElementById("sector").value = visitToEdit.sector || "";
+    document.getElementById("agent").value = visitToEdit.agent || "";
+    document.getElementById("date").value = visitToEdit.date || "";
+    document.getElementById("time").value = visitToEdit.time || "";
+    document.getElementById("pickup").value = visitToEdit.pickup || "No";
+    document.getElementById("pickupLocation").value = visitToEdit.pickupLocation || "";
+    document.getElementById("driver").value = visitToEdit.driver || "";
+    document.getElementById("vehicle").value = visitToEdit.vehicle || "";
+    document.getElementById("visitors").value = visitToEdit.visitors || "";
+    document.getElementById("status").value = visitToEdit.status || "Scheduled";
+    document.getElementById("notes").value = visitToEdit.notes || "";
+    document.getElementById("followup").value = visitToEdit.followup || "";
+
+    if (visitToEdit.pickup === "Yes") {
+        pickupBoxes.forEach(box => box.style.display = "block");
+    } else {
+        pickupBoxes.forEach(box => box.style.display = "none");
+    }
+
+    const submitButton = visitForm.querySelector('button[type="submit"]');
+    if (submitButton) {
+        submitButton.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Update Site Visit';
+    }
+
+    const heading = visitForm.querySelector('h3');
+    if (heading) {
+        heading.textContent = 'Edit Site Visit';
+    }
+
+    document.getElementById("client").focus();
+}
+
+function deleteVisit(visitId){
 
     if(confirm("Delete Site Visit?")){
 
-        visits.splice(index,1);
+        visits = visits.filter(v => v.id !== visitId);
 
         localStorage.setItem("visits",JSON.stringify(visits));
 
@@ -255,6 +348,11 @@ window.location.href=`tel:${number}`;
 }
 
 // =========================
+
+window.editVisit = editVisit;
+window.deleteVisit = deleteVisit;
+window.callClient = callClient;
+window.whatsappClient = whatsappClient;
 
 loadVisits();
 
@@ -317,8 +415,7 @@ document.getElementById("importVisits").addEventListener("change", function (e) 
 
             const cols = row.split(",");
 
-            visits.push({
-
+            visits.push(normalizeVisit({
                 client: cols[0] || "",
                 mobile: cols[1] || "",
                 project: cols[2] || "",
@@ -334,8 +431,7 @@ document.getElementById("importVisits").addEventListener("change", function (e) 
                 vehicle: cols[12] || "",
                 followup: cols[13] || "",
                 notes: cols[14] || ""
-
-            });
+            }, visits.length));
 
         });
 

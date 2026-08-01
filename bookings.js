@@ -7,7 +7,42 @@ document.addEventListener("DOMContentLoaded", function () {
     const projectFilter = document.getElementById("projectFilter");
     const statusFilter = document.getElementById("statusFilter");
 
-    let bookings = JSON.parse(localStorage.getItem("bookings")) || [];
+    let bookings = [];
+    let editingBookingId = null;
+
+    function normalizeBooking(rawBooking = {}, index = 0) {
+        return {
+            id: rawBooking.id || `booking-${Date.now()}-${index + 1}-${Math.random().toString(16).slice(2)}`,
+            clientName: rawBooking.clientName || rawBooking.client || "",
+            mobile: rawBooking.mobile || "",
+            cnic: rawBooking.cnic || "",
+            project: rawBooking.project || "",
+            sector: rawBooking.sector || "",
+            plot: rawBooking.plot || "",
+            status: rawBooking.status || "Booked"
+        };
+    }
+
+    function loadBookingsFromStorage() {
+        try {
+            const stored = JSON.parse(localStorage.getItem("bookings") || "[]");
+            if (!Array.isArray(stored)) {
+                return [];
+            }
+
+            const normalized = stored.map((booking, index) => normalizeBooking(booking, index));
+            if (JSON.stringify(normalized) !== JSON.stringify(stored)) {
+                localStorage.setItem("bookings", JSON.stringify(normalized));
+            }
+
+            return normalized;
+        } catch (error) {
+            console.error("Failed to load bookings:", error);
+            return [];
+        }
+    }
+
+    bookings = loadBookingsFromStorage();
 
     // ===========================
     // Load Bookings
@@ -29,7 +64,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 <td>${booking.plot}</td>
                 <td>${booking.status}</td>
                 <td>
-                    <button class="delete-btn" onclick="deleteBooking(${index})">
+                    <button class="edit-btn" onclick="editBooking('${booking.id}')">
+                        Edit
+                    </button>
+                    <button class="delete-btn" onclick="deleteBooking('${booking.id}')">
                         Delete
                     </button>
                 </td>
@@ -48,8 +86,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
         e.preventDefault();
 
-        const booking = {
-
+        const booking = normalizeBooking({
+            id: editingBookingId || null,
             clientName: document.getElementById("client").value,
             mobile: document.getElementById("mobile").value,
             cnic: document.getElementById("cnic").value,
@@ -57,18 +95,32 @@ document.addEventListener("DOMContentLoaded", function () {
             sector: document.getElementById("sector").value,
             plot: document.getElementById("plot").value,
             status: document.getElementById("bookingStatus").value
+        }, bookings.length);
 
-        };
-
-        bookings.push(booking);
+        if (editingBookingId) {
+            bookings = bookings.map(b => b.id === editingBookingId ? booking : b);
+            alert("Booking Updated Successfully");
+        } else {
+            bookings.push(booking);
+            alert("Booking Saved Successfully");
+        }
 
         localStorage.setItem("bookings", JSON.stringify(bookings));
 
         bookingForm.reset();
+        editingBookingId = null;
+
+        const submitButton = bookingForm.querySelector('button[type="submit"]');
+        if (submitButton) {
+            submitButton.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save Booking';
+        }
+
+        const heading = bookingForm.querySelector('h3');
+        if (heading) {
+            heading.textContent = 'New Booking';
+        }
 
         loadBookings();
-
-        alert("Booking Saved Successfully");
 
     });
 
@@ -76,11 +128,41 @@ document.addEventListener("DOMContentLoaded", function () {
     // Delete Booking
     // ===========================
 
-    window.deleteBooking = function (index) {
+    window.editBooking = function (bookingId) {
+
+        const bookingToEdit = bookings.find(b => b.id === bookingId);
+
+        if (!bookingToEdit) return;
+
+        editingBookingId = bookingId;
+
+        document.getElementById("client").value = bookingToEdit.clientName || "";
+        document.getElementById("mobile").value = bookingToEdit.mobile || "";
+        document.getElementById("cnic").value = bookingToEdit.cnic || "";
+        document.getElementById("project").value = bookingToEdit.project || "";
+        document.getElementById("sector").value = bookingToEdit.sector || "";
+        document.getElementById("plot").value = bookingToEdit.plot || "";
+        document.getElementById("bookingStatus").value = bookingToEdit.status || "Booked";
+
+        const submitButton = bookingForm.querySelector('button[type="submit"]');
+        if (submitButton) {
+            submitButton.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Update Booking';
+        }
+
+        const heading = bookingForm.querySelector('h3');
+        if (heading) {
+            heading.textContent = 'Edit Booking';
+        }
+
+        document.getElementById("client").focus();
+
+    };
+
+    window.deleteBooking = function (bookingId) {
 
         if (confirm("Delete this booking?")) {
 
-            bookings.splice(index, 1);
+            bookings = bookings.filter(b => b.id !== bookingId);
 
             localStorage.setItem("bookings", JSON.stringify(bookings));
 
