@@ -283,9 +283,14 @@ function exportLeads() {
 }
 
 function handleImportLeadFile(event) {
-    const [file] = event.target.files || [];
+    const [file] = (event && event.target && event.target.files) || [];
 
     if (!file) {
+        return;
+    }
+
+    if (typeof window.XLSX === "undefined" || !window.XLSX?.utils || !window.XLSX?.read) {
+        notify("Excel library is not available. Please include SheetJS (XLSX) and try again.");
         return;
     }
 
@@ -293,15 +298,33 @@ function handleImportLeadFile(event) {
 
     reader.onload = function (loadEvent) {
         try {
-            const data = new Uint8Array(loadEvent.target.result);
+            const result = loadEvent?.target?.result;
+            if (!result) {
+                notify("The selected file could not be read.");
+                return;
+            }
+
+            const data = new Uint8Array(result);
             const workbook = window.XLSX.read(data, { type: "array" });
-            const sheet = workbook.Sheets[workbook.SheetNames[0]];
+            const firstSheetName = workbook.SheetNames && workbook.SheetNames[0];
+            if (!firstSheetName) {
+                notify("No sheets found in the selected Excel file.");
+                return;
+            }
+
+            const sheet = workbook.Sheets[firstSheetName];
             const importedRows = window.XLSX.utils.sheet_to_json(sheet, { defval: "" });
+
+            if (!Array.isArray(importedRows) || importedRows.length === 0) {
+                notify("No data found in the selected Excel file.");
+                return;
+            }
 
             const importedLeads = importedRows.map((row) => normalizeLead(row));
             leads = [...leads, ...importedLeads];
             saveLeads();
-            renderLeads(searchLead.value, statusFilter.value);
+            renderLeads(searchLead ? searchLead.value : "", statusFilter ? statusFilter.value : "");
+            if (importLeadFile) importLeadFile.value = "";
             notify("Leads imported successfully.");
         } catch (error) {
             console.error("Failed to import Excel file:", error);
